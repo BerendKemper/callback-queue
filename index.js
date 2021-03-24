@@ -1,5 +1,5 @@
 "use strict";
-class QueueCallback {
+class CallbackQueue {
 	#index = 0;
 	#queue = [];
 	#next() {
@@ -17,4 +17,4 @@ class QueueCallback {
 		this.#queue = [];
 	};
 };
-module.exports = QueueCallback;
+module.exports = CallbackQueue;
