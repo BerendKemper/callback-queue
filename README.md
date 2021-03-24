@@ -1,7 +1,7 @@
 # callback queue
 
-<pre><code>npm i callback.queue</code></pre>
+<pre><code>npm i ca11back-queue</code></pre>
 
 ```javascript
-const CallbackQueue = require("callback.queue");
+const CallbackQueue = require("ca11back-queue");
 ```
