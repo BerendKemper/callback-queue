@@ -7,7 +7,7 @@ const CallbackQueue = require("ca11back-queue");
 ```
 
 <h2>Class: <code>CallbackQueue</code></h2>
-A <code>callbackQueue<code> can alter another module's flow of asynchronous methods to appear synchronous. Additionally, one instance from a module that has two or more references to it at different positions in the code, they share the same <code>callbackQueue<code>. Therefore if an asynchronous method is invoked on one reference of the instance and also invoked on another reference at the same time, the <code>callbackQueue</code> has queued each of those asynchronous methods. The execution of queued functions do not collide with eachother which can prevent (unexpected) bugs such as writing to a file when the previous write had not yet finished. 
+A <code>callbackQueue</code> can alter another module's flow of asynchronous methods to appear synchronous. Additionally, one instance from a module that has two or more references to it at different positions in the code, they share the same <code>callbackQueue</code>. Therefore if an asynchronous method is invoked on one reference of the instance and also invoked on another reference at the same time, the <code>callbackQueue</code> has queued each of those asynchronous methods. The execution of queued functions do not collide with eachother which can prevent (unexpected) bugs such as writing to a file when the previous write had not yet finished. 
 <h3><code>new CallbackQueue()</code></h3>
 <h3><code>callbackQueue.push(callback)</code></h3>
 <ul>
