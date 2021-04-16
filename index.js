@@ -3,7 +3,8 @@ class CallbackQueue {
 	#index = 0;
 	#queue = [];
 	#next() {
-		if (++this.#index < this.#queue.length)
+		this.#queue[this.#index++] = null;
+		if (this.#index < this.#queue.length)
 			return this.#queue[this.#index](() => this.#next());
 		this.clear();
 	};
