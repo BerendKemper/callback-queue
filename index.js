@@ -6,7 +6,7 @@ class CallbackQueue {
 		this.#queue[this.#index++] = null;
 		if (this.#index < this.#queue.length) {
 			const { callback, context } = this.#queue[this.#index];
-			return callback.call(this.#parent, () => this.#next(), context);
+			return callback.call(this.#parent || this, () => this.#next(), context);
 		}
 		this.clear();
 	};
@@ -17,7 +17,7 @@ class CallbackQueue {
 	push(callback, context) {
 		this.#queue.push({ callback, context });
 		if (this.#index === this.#queue.length - 1)
-			callback.call(this.#parent, () => this.#next(), context);
+			callback.call(this.#parent || this, () => this.#next(), context);
 	};
 	clear() {
 		this.#index = 0;

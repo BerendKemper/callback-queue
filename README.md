@@ -14,7 +14,7 @@ A <code>callbackQueue</code> can alter another module's flow of asynchronous met
 		<summary>
 			<code>parent</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">&lt;Object&gt;</a> optional
 		</summary>
-		Every <code>callback</code> is invoked with <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function/call">call</a> and <code>parent</code> as <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/this">this</a>. This is usefull in case a (not-arrow) function is passed over as <code>callback</code> in <code>push</code>.
+		Every <code>callback</code> is invoked with <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function/call">call</a> and sets the <code>parent</code> parameter as <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/this">this</a>. If <code>parent</code> is falsy the <code>callbackQueue</code> is set as <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/this">this</a>. Only works if not-arrow functions are passed over as <code>callback</code> in <code>push</code>.
 	</details>
 </ul>
 <h3><code>callbackQueue.push(callback[, context])</code></h3>
