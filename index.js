@@ -2,22 +2,26 @@
 class CallbackQueue {
 	#index = 0;
 	#queue = [];
-	#next() {
-		this.#queue[this.#index++] = null;
-		if (this.#index < this.#queue.length) {
-			const { callback, context } = this.#queue[this.#index];
-			return callback.call(this.#parent || this, () => this.#next(), context);
-		}
-		this.clear();
-	};
-	#parent;
+	#parent = null;
 	constructor(parent) {
-		this.#parent = typeof parent === "undefined" ? null : parent;
+		if (typeof parent !== "undefined")
+			this.#parent = parent;
+	};
+	#next() {
+		if (++this.#index < this.#queue.length) {
+			const { callback, context } = this.#queue[this.#index];
+			this.#queue[this.#index] = null;
+			return callback.call(this.#parent ?? this, () => this.#next(), context);
+		}
+		this.#index = 0;
+		this.#queue = [];
 	};
 	push(callback, context) {
+		if (this.#queue.length === 0) {
+			this.#queue.length = 1;
+			return callback.call(this.#parent ?? this, () => this.#next(), context);
+		}
 		this.#queue.push({ callback, context });
-		if (this.#index === this.#queue.length - 1)
-			callback.call(this.#parent || this, () => this.#next(), context);
 	};
 	clear() {
 		this.#index = 0;
