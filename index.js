@@ -1,5 +1,5 @@
 "use strict";
-/**@callback callback @param {funtion} next*/
+/**@callback callback @param {function} next @param context*/
 class CallbackQueue {
     #index = 0;
     #queue = [];
