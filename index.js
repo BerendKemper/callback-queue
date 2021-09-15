@@ -1,18 +1,18 @@
 "use strict";
-/**@callback callback @param {function} next @param context*/
 class CallbackQueue {
     #index = 0;
     #queue = [];
     #parent = null;
+    #nextCb = null;
     constructor(parent) {
-        if (typeof parent !== "undefined")
-            this.#parent = parent;
+        this.#parent = typeof parent === "undefined" ? this : parent;
+        this.#nextCb = arg => this.#next(arg);
     };
-    #next() {
+    #next(arg) {
         if (++this.#index < this.#queue.length) {
             const { callback, context } = this.#queue[this.#index];
             this.#queue[this.#index] = null;
-            return callback.call(this.#parent ?? this, () => this.#next(), context);
+            return callback.call(this.#parent, this.#nextCb, context, arg);
         }
         this.#index = 0;
         this.#queue = [];
@@ -21,7 +21,7 @@ class CallbackQueue {
     push(callback, context) {
         if (this.#queue.length === 0) {
             this.#queue.length = 1;
-            return callback.call(this.#parent ?? this, () => this.#next(), context);
+            return callback.call(this.#parent, this.#nextCb, context);
         }
         this.#queue.push({ callback, context });
     };
@@ -31,8 +31,8 @@ class CallbackQueue {
     };
     destroy() {
         this.#parent = null;
-        this.#index = 0;
-        this.#queue = [];
+        this.#nextCb = null;
+        this.#queue = null;
     };
     get index() {
         return this.#index;
@@ -42,3 +42,4 @@ class CallbackQueue {
     };
 };
 module.exports = CallbackQueue;
+/**@callback callback @param {function} next @param context*/
