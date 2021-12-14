@@ -21,9 +21,11 @@ class CallbackQueue {
     push(callback, context) {
         if (this.#queue.length === 0) {
             this.#queue.length = 1;
-            return callback.call(this.#parent, this.#nextCb, context);
+            callback.call(this.#parent, this.#nextCb, context);
+            return this;
         }
         this.#queue.push({ callback, context });
+        return this;
     };
     clear() {
         this.#index = 0;
