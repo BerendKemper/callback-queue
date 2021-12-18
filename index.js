@@ -7,7 +7,7 @@ class CallbackQueue {
     constructor(parent) {
         this.#parent = typeof parent === "undefined" ? this : parent;
         this.#nextCb = arg => this.#next(arg);
-    };
+    }
     #next(arg) {
         if (++this.#index < this.#queue.length) {
             const { callback, context } = this.#queue[this.#index];
@@ -16,7 +16,7 @@ class CallbackQueue {
         }
         this.#index = 0;
         this.#queue = [];
-    };
+    }
     /**@param {callback} callback*/
     push(callback, context) {
         if (this.#queue.length === 0) {
@@ -26,22 +26,26 @@ class CallbackQueue {
         }
         this.#queue.push({ callback, context });
         return this;
-    };
+    }
     clear() {
         this.#index = 0;
         this.#queue = [];
-    };
+        return this;
+    }
     destroy() {
         this.#parent = null;
         this.#nextCb = null;
         this.#queue = null;
-    };
+    }
     get index() {
         return this.#index;
-    };
+    }
+    get lastIndex() {
+        return this.#index >= this.#queue.length - 1;
+    }
     get length() {
-        return this.#queue.length
-    };
-};
+        return this.#queue.length;
+    }
+}
 module.exports = CallbackQueue;
 /**@callback callback @param {function} next @param context*/

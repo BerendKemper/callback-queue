@@ -45,56 +45,96 @@ A <code>callbackQueue</code> can alter another module's flow of asynchronous met
 		</summary>
 		Every <code>callback</code> is invoked with <code>context</code> passed over as second argument. The <code>context</code> parameter can be anything.
 	</details>
+    <details>
+        <summary>
+            Returns <code>this</code> &lt;CallbackQueue&gt;
+        </summary>
+        Allows chaining methods.
+    </details>
 </ul>
 The first <code>callback</code> to be pushed is invoked immediately, more <code>callbacks</code> to be pushed are queued in a private queue array.
 <h3><code>callbackQueue.clear()</code></h3>
+<ul>
+    <details>
+        <summary>
+            Returns <code>this</code> &lt;CallbackQueue&gt;
+        </summary>
+        Allows chaining methods.
+    </details>
+</ul>
 Empties the private queue array, removing any queued <code>callbacks</code>.
 <h3><code>callbackQueue.destroy()</code></h3>
 Empties the private queue array, removing any queued <code>callbacks</code> and sets the private <code>parent</code> property to <code>null</code>.
 <h3><code>callbackQueue.index</code></h3>
+<ul>
+    <details>
+        <summary>
+            Returns <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type">&lt;integer&gt;</a>
+        </summary>
+        The <code>index</code> keeps increasing untill it reaches the end of the <code>queue</code>, then the <code>index</code> is set to <code>0</code>.
+    </details>
+</ul>
+Readable property of the current index in the <code>queue</code> array.
+<h3><code>callbackQueue.lastIndex</code></h3>
+<ul>
+    <details>
+        <summary>
+            Returns <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Boolean_type">&lt;Boolean&gt;</a>
+        </summary>
+        The lastIndex is calculated as <code>index >= queue.length - 1</code>.
+    </details>
+</ul>
 Readable property of the current index in the private <code>queue</code> array.
 <h3><code>callbackQueue.length</code></h3>
+<ul>
+    <details>
+        <summary>
+            Returns <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type">&lt;integer&gt;</a>
+        </summary>
+        The <code>length</code> keeps increasing the more callbacks are pushed into the <code>queue</code> untill the <code>index</code> reached the end of the <code>queue</code>, then <code>queue</code> is cleared and it's <code>lenght</code> becomes <code>0</code>;
+    </details>
+</ul>
 Readable property of the length of the private <code>queue</code> array.
 <h2>Example</h2>
 
 ```javascript
-function nextAfterTimeoutA(next, { msec, privMethod } = context) {
-	setTimeout(() => {
-		privMethod.call(this);
-		next(console.log("finished a"));
-	}, msec);
-};
-function nextAfterTimeoutB(next, msec) {
-	setTimeout(() => next(console.log("finished b")), msec);
-};
 class MyModule {
-	#queue;
-	constructor() {
-		this.#queue = new CallbackQueue(this);
-	};
-	#c = 0;
-	#privMethod() {
-		console.log("counted priv:", ++this.#c);
-	};
-	a() {
-		this.#queue.push(nextAfterTimeoutA, { msec: 1000, privMethod: this.#privMethod });
-		return this;
-	};
-	b() {
-		this.#queue.push(nextAfterTimeoutB, 500);
-		return this;
-	};
-	destroy() {
-		this.queue.destroy();
-	};
-};
+    #c = 0;
+    #queue;
+    constructor() {
+        this.#queue = new CallbackQueue(this);
+    }
+    a() {
+        this.#queue.push(this.#afterTimeoutA, 1000);
+        return this;
+    }
+    #afterTimeoutA(next, msec) {
+        setTimeout(() => {
+            this.#privMethod();
+            next(console.log("finished a"));
+        }, msec);
+    }
+    #privMethod() {
+        console.log("counted priv:", ++this.#c);
+    }
+    b() {
+        this.#queue.push(this.#aAfterTimeoutB, 500);
+        return this;
+    }
+    #aAfterTimeoutB(next, msec) {
+        setTimeout(() => next(console.log("finished b")), msec);
+    }
+    destroy() {
+        this.#queue.destroy();
+    }
+}
 const inst1 = new MyModule();
-const inst2 = inst1;
-inst1.a().b().a().b().a().b();
-inst2.b().b().b().a().a().a();
+inst1.a().b().a().b().a().b()
+    .b().b().b().a().a().a();
 ```
 
 ```javascript
+// FilestreamLogger uses a CallbackQueue behind the screen.
 const FilestreamLogger = require("filestream-logger");
 const logger = {};
 logger.log = new FilestreamLogger("log");
