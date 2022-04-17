@@ -64,9 +64,9 @@ The first callback to be pushed is invoked immediately, more callbacks to be pus
         Allows chaining methods.
     </details>
 </ul>
-Empties the inner queue, removing any queued callbacks and their arguments.
+Empties the queue, removing any queued callbacks and their arguments.
 <h3><code>callbackQueue.destroy()</code></h3>
-Empties the inner queue, removing any queued callbacks and their arguments and sets the parent property to null.
+Empties the queue, removing any queued callbacks and their arguments and sets the parent property to null.
 <h3><code>callbackQueue.index</code></h3>
 <ul>
     <details>
