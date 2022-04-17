@@ -7,17 +7,17 @@ const CallbackQueue = require("ca11back-queue");
 ```
 
 <h2>Class: <code>CallbackQueue</code></h2>
-A <code>callbackQueue</code> can alter another module's flow of asynchronous methods to appear synchronous. Additionally, one instance from a module that has two or more references to it at different positions in the code, they share the same <code>callbackQueue</code>. Therefore if an asynchronous method is invoked on one reference of the instance and also invoked on another reference at the same time, the <code>callbackQueue</code> has queued each of those asynchronous methods. The execution of queued functions do not collide with eachother which can prevent (unexpected) bugs such as writing to a file when the previous write had not yet finished.
+The callbackQueue ensures a synchronous execution of queued asynchronous functions (callbacks) and not blocking the eventloop. The callbackQueue can pass over arguments when pushing new callbacks into the queue. The callbackQueue can also pass over arguments when invoking the next queued callback. Additionally the callbackQueue can invoke queued callbacks and passing over a certain parent object as <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/this">this</a>.
 <h3><code>new CallbackQueue([parent])</code></h3>
 <ul>
 	<details>
 		<summary>
 			<code>parent</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">&lt;Object&gt;</a> optional
 		</summary>
-		Every <code>callback</code> is invoked with <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function/call">call</a> and sets the <code>parent</code> parameter as <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/this">this</a>. If <code>parent</code> is falsy the <code>callbackQueue</code> is set as <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/this">this</a>. Only works if not-arrow functions are passed over as <code>callback</code> in <code>push</code>.
+		Every callback is invoked with <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function/call">call</a> and sets the either the <code>parent</code> parameter or in case that was undefined sets the callbackQueue as <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/this">this</a>.
 	</details>
 </ul>
-<h3><code>callbackQueue.push(callback[, context])</code></h3>
+<h3><code>callbackQueue.push(callback[, ...args])</code></h3>
 <ul>
 	<details>
 		<summary>
@@ -28,22 +28,30 @@ A <code>callbackQueue</code> can alter another module's flow of asynchronous met
 				<summary>
 					<code>next</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function">&lt;Function&gt;</a> <b>Required!</b>
 				</summary>
-				The paramater <code>next</code> must be executed when the asynchronous tasks from the <code>callback</code> are finished or the <code>callbackQueue</code> gets stuck.
+                ```javascript
+                next([...args]);
+                ```
+				Every <code>callback</code> must take a <code>next</code> as first parameter and this is a function. Invoking the <code>next</code> function from within the <code>callback</code> triggers the next callback in queue to be invoked. When passing arguments to the <code>next</code> function these arguments are added on top of the initial arguments that were passed over to the <code>push</code> method.
 			</details>
 			<details>
 				<summary>
-					<code>context</code>
+					<code>args</code>
 				</summary>
-				In case the <code>push</code> method was invoked with a <code>context</code> parameter, this parameter would be passed over as the second parameter in this <code>callback</code>.
+				These initial arguments are passed over over to the <code>callback</code>.
 			</details>
 		</ul>
-		The <code>callback</code> is the function, written by the developer who is using ca11back-queue, that needs to be queued.
+
+        ```javascript
+        function callback(next[, ...args])
+        ```
+
+		The asynchronous function to push into queue is the <code>callback</code> parameter.
 	</details>
 	<details>
 		<summary>
-			<code>context</code> optional
+			<code>args</code> optional
 		</summary>
-		Every <code>callback</code> is invoked with <code>context</code> passed over as second argument. The <code>context</code> parameter can be anything.
+		The <code>push</code> method allows passing over <code>arguments</code> so that when the <code>callback</code> is invoked the <code>args</code> are also passed over.
 	</details>
     <details>
         <summary>
@@ -52,7 +60,7 @@ A <code>callbackQueue</code> can alter another module's flow of asynchronous met
         Allows chaining methods.
     </details>
 </ul>
-The first <code>callback</code> to be pushed is invoked immediately, more <code>callbacks</code> to be pushed are queued in a private queue array.
+The first callback</code> to be pushed is invoked immediately, more callbacks to be pushed are queued in a private queue array.
 <h3><code>callbackQueue.clear()</code></h3>
 <ul>
     <details>
@@ -62,9 +70,9 @@ The first <code>callback</code> to be pushed is invoked immediately, more <code>
         Allows chaining methods.
     </details>
 </ul>
-Empties the private queue array, removing any queued <code>callbacks</code>.
+Empties the private queue array, removing any queued callbacks and their arguments.
 <h3><code>callbackQueue.destroy()</code></h3>
-Empties the private queue array, removing any queued <code>callbacks</code> and sets the private <code>parent</code> property to <code>null</code>.
+Empties the private queue array, removing any queued callbacks and their arguments and sets the private <code>parent</code> property to <code>null</code>.
 <h3><code>callbackQueue.index</code></h3>
 <ul>
     <details>
