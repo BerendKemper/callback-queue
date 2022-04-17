@@ -7,7 +7,7 @@ const CallbackQueue = require("ca11back-queue");
 ```
 
 <h2>Class: <code>CallbackQueue</code></h2>
-The callbackQueue ensures a synchronous execution of queued asynchronous functions (callbacks) and not blocking the eventloop. The callbackQueue can pass over arguments when pushing new callbacks into the queue. The callbackQueue can also pass over arguments when invoking the next queued callback. Additionally the callbackQueue can invoke queued callbacks and passing over a certain parent object as <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/this">this</a>.
+The callbackQueue offers a synchronous execution of queued asynchronous functions (callbacks) and not blocking the eventloop. The callbackQueue can pass over arguments when pushing new callbacks into the queue. The callbackQueue can also pass over arguments when invoking the next queued callback. Additionally the callbackQueue can invoke queued callbacks and passing over a certain parent object as <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/this">this</a>.
 <h3><code>new CallbackQueue([parent])</code></h3>
 <ul>
 	<details>
