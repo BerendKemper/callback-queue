@@ -17,7 +17,7 @@ class CallbackQueue {
         this.#index = 0;
         this.#queue = [];
     }
-    /**@param {callback} callback*/
+    /**@param {import("ca11back-queue/callback").callback} callback*/
     push(callback, ...args) {
         if (this.#queue.length === 0) {
             this.#queue.length = 1;
@@ -48,4 +48,3 @@ class CallbackQueue {
     }
 }
 module.exports = CallbackQueue;
-/**@callback callback @param {function} next @param context*/
