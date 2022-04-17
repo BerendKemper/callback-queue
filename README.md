@@ -14,7 +14,7 @@ The callbackQueue offers a synchronous execution of queued asynchronous function
 		<summary>
 			<code>parent</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">&lt;Object&gt;</a> optional
 		</summary>
-		Every callback is invoked with <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function/call">call</a> and sets either the <code>parent</code> parameter or in case that was undefined sets the callbackQueue as <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/this">this</a>.
+		Every callback is invoked with <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function/call">call</a> and sets either the <code>parent</code> parameter as <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/this">this</a> or in case that was undefined sets the callbackQueue as <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/this">this</a>.
 	</details>
 </ul>
 <h3><code>callbackQueue.push(callback[, ...args])</code></h3>
