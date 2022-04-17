@@ -28,10 +28,7 @@ The callbackQueue ensures a synchronous execution of queued asynchronous functio
 				<summary>
 					<code>next</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function">&lt;Function&gt;</a> <b>Required!</b>
 				</summary>
-
-                ```javascript
-                next([...args]);
-                ```
+                <code>next([...args]);</code>
 				Every <code>callback</code> must take a <code>next</code> as first parameter and this is a function. Invoking the <code>next</code> function from within the <code>callback</code> triggers the next callback in queue to be invoked. When passing arguments to the <code>next</code> function these arguments are added on top of the initial arguments that were passed over to the <code>push</code> method.
 			</details>
 			<details>
@@ -41,11 +38,7 @@ The callbackQueue ensures a synchronous execution of queued asynchronous functio
 				These initial arguments are passed over over to the <code>callback</code>.
 			</details>
 		</ul>
-
-        ```javascript
-        function callback(next[, ...args])
-        ```
-
+        <code>function callback(next[, ...args])</code>
 		The asynchronous function to push into queue is the <code>callback</code> parameter.
 	</details>
 	<details>
