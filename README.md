@@ -86,7 +86,7 @@ Readable property of the current index in the queue.
         The lastIndex is calculated as <code>index >= queue.length - 1</code>.
     </details>
 </ul>
-Readable property of the that states if the current index in the queue has hit the last index.
+Readable property that returns the state if the current index in the queue has reached the end of the queue.
 <h3><code>callbackQueue.length</code></h3>
 <ul>
     <details>
