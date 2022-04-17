@@ -23,7 +23,7 @@ The callbackQueue ensures a synchronous execution of queued asynchronous functio
 		<summary>
 			<code>calback</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function">&lt;Function&gt;</a>
 		</summary>
-        <b><code>function callback(next[, ...args])</code></b>
+        <b><code>function callback(next[, ...args]) {}</code></b>
 		<ul>
 			<details>
 				<summary>
@@ -36,7 +36,7 @@ The callbackQueue ensures a synchronous execution of queued asynchronous functio
 				<summary>
 					<code>args</code>
 				</summary>
-				These initial arguments are passed over over to the <code>callback</code>.
+				The combination of the initial captured arguments that were passed over to the <code>push</code> method and the secundaire captured arguments that were passed over into <code>next</code> function from the previous <code>callback</code> in the queue.
 			</details>
 		</ul>
 		The asynchronous function to push into queue is the <code>callback</code> parameter.
@@ -45,7 +45,7 @@ The callbackQueue ensures a synchronous execution of queued asynchronous functio
 		<summary>
 			<code>args</code> optional
 		</summary>
-		The <code>push</code> method allows passing over <code>arguments</code> so that when the <code>callback</code> is invoked the <code>args</code> are also passed over.
+		These initial arguments are passed over over to the <code>callback</code>.
 	</details>
     <details>
         <summary>
@@ -54,7 +54,7 @@ The callbackQueue ensures a synchronous execution of queued asynchronous functio
         Allows chaining methods.
     </details>
 </ul>
-The first callback</code> to be pushed is invoked immediately, more callbacks to be pushed are queued in a private queue array.
+The first callback to be pushed is invoked immediately, more callbacks to be pushed are queued.
 <h3><code>callbackQueue.clear()</code></h3>
 <ul>
     <details>
@@ -64,19 +64,19 @@ The first callback</code> to be pushed is invoked immediately, more callbacks to
         Allows chaining methods.
     </details>
 </ul>
-Empties the private queue array, removing any queued callbacks and their arguments.
+Empties the inner queue, removing any queued callbacks and their arguments.
 <h3><code>callbackQueue.destroy()</code></h3>
-Empties the private queue array, removing any queued callbacks and their arguments and sets the private <code>parent</code> property to <code>null</code>.
+Empties the inner queue, removing any queued callbacks and their arguments and sets the parent property to null.
 <h3><code>callbackQueue.index</code></h3>
 <ul>
     <details>
         <summary>
             Returns <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type">&lt;integer&gt;</a>
         </summary>
-        The <code>index</code> keeps increasing untill it reaches the end of the <code>queue</code>, then the <code>index</code> is set to <code>0</code>.
+        The index keeps increasing untill it reaches the end of the queue, then the index is set to 0.
     </details>
 </ul>
-Readable property of the current index in the <code>queue</code> array.
+Readable property of the current index in the queue.
 <h3><code>callbackQueue.lastIndex</code></h3>
 <ul>
     <details>
@@ -86,17 +86,17 @@ Readable property of the current index in the <code>queue</code> array.
         The lastIndex is calculated as <code>index >= queue.length - 1</code>.
     </details>
 </ul>
-Readable property of the current index in the private <code>queue</code> array.
+Readable property of the that states if the current index in the queue has hit the last index.
 <h3><code>callbackQueue.length</code></h3>
 <ul>
     <details>
         <summary>
             Returns <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type">&lt;integer&gt;</a>
         </summary>
-        The <code>length</code> keeps increasing the more callbacks are pushed into the <code>queue</code> untill the <code>index</code> reached the end of the <code>queue</code>, then <code>queue</code> is cleared and it's <code>lenght</code> becomes <code>0</code>;
+        The length keeps increasing the more callbacks are pushed into the queue untill the index reaches the end of the queue, then queue is cleared and it's lenght becomes 0.
     </details>
 </ul>
-Readable property of the length of the private <code>queue</code> array.
+Readable property of the length of the queue.
 <h2>Example</h2>
 
 ```javascript
