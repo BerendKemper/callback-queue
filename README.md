@@ -23,13 +23,13 @@ The callbackQueue ensures a synchronous execution of queued asynchronous functio
 		<summary>
 			<code>calback</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function">&lt;Function&gt;</a>
 		</summary>
-        <pre>function callback(next[, ...args])</pre>
+        <b><code>function callback(next[, ...args])</code></b>
 		<ul>
 			<details>
 				<summary>
 					<code>next</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function">&lt;Function&gt;</a> <b>Required!</b>
 				</summary>
-                <pre>next([...args]);</pre>
+                <div><b><code>next([...args]);</code></b></div>
 				Every <code>callback</code> must take a <code>next</code> as first parameter and this is a function. Invoking the <code>next</code> function from within the <code>callback</code> triggers the next callback in queue to be invoked. When passing arguments to the <code>next</code> function these arguments are added on top of the initial arguments that were passed over to the <code>push</code> method.
 			</details>
 			<details>
