@@ -66,7 +66,7 @@ The first callback to be pushed is invoked immediately, more callbacks to be pus
 </ul>
 Empties the queue, removing any queued callbacks and their arguments.
 <h3><code>callbackQueue.destroy()</code></h3>
-Empties the queue, removing any queued callbacks and their arguments and sets the parent property to null.
+Empties the queue, removing any queued callbacks and their arguments and sets the parent property to null. Remove any references to the callbackQueue instance and it can be garbage collected.
 <h3><code>callbackQueue.index</code></h3>
 <ul>
     <details>
