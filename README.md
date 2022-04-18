@@ -34,7 +34,7 @@ The callbackQueue offers a synchronous execution of queued asynchronous function
 			</details>
 			<details>
 				<summary>
-					<code>args</code>
+					<code>args</code> optional
 				</summary>
 				The combination of the initial captured arguments that were passed over to the <code>push</code> method and the secundaire captured arguments that were passed over into <code>next</code> function from the previous <code>callback</code> in the queue.
 			</details>
