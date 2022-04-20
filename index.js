@@ -6,9 +6,9 @@ class CallbackQueue {
     #nextCb = null;
     constructor(parent) {
         this.#parent = typeof parent === "undefined" ? this : parent;
-        this.#nextCb = (...args) => this.#next(...args);
+        this.#nextCb = (...args) => this.#next(args);
     }
-    #next(...args2) {
+    #next(args2) {
         if (++this.#index < this.#queue.length) {
             const [callback, ...args] = this.#queue[this.#index];
             this.#queue[this.#index] = null;
