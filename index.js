@@ -29,12 +29,13 @@ class CallbackQueue {
     }
     clear() {
         this.#index = 0;
-        this.#queue = [];
+        this.#queue.length = 0;
         return this;
     }
     destroy() {
         this.#parent = null;
         this.#nextCb = null;
+        this.#queue.length = 0;
         this.#queue = null;
     }
     get index() {
