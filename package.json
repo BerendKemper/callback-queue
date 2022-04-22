@@ -14,5 +14,13 @@
     "engines": {
         "node": ">14.0.0"
     },
-    "engineStrict": true
+    "engineStrict": true,
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/BerendKemper/emperjs.git"
+    },
+    "bugs": {
+        "url": "https://github.com/BerendKemper/emperjs/issues"
+    },
+    "homepage": "https://github.com/BerendKemper/emperjs#readme"
 }
