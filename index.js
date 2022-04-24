@@ -2,41 +2,40 @@
 class CallbackQueue {
     #index = 0;
     #queue = [];
-    #parent = null;
     #nextCb = null;
-    constructor(parent) {
-        this.#parent = typeof parent === "undefined" ? this : parent;
-        this.#nextCb = (...args) => this.#next(args);
+    #initArgs = null;
+    #callback = null;
+    #args = null;
+    constructor(...initArgs) {
+        this.#initArgs = initArgs;
+        this.#nextCb = (...args2) => this.#next(args2);
     }
     #next(args2) {
         if (++this.#index < this.#queue.length) {
-            const [callback, ...args] = this.#queue[this.#index];
+            [this.#callback, ...this.#args] = this.#queue[this.#index];
             this.#queue[this.#index] = null;
-            return callback.call(this.#parent, this.#nextCb, ...args, ...args2);
+            return this.#callback(...this.#initArgs, this.#nextCb, ...this.#args, ...args2);
         }
-        this.#index = 0;
-        this.#queue = [];
+        this.clear();
     }
-    /**@param {import("ca11back-queue/callback").callback} callback*/
+    /**@param {() => void} callback*/
     push(callback, ...args) {
         if (this.#queue.length === 0) {
             this.#queue.length = 1;
-            callback.call(this.#parent, this.#nextCb, ...args);
+            this.#callback = callback;
+            this.#callback(...this.#initArgs, this.#nextCb, ...args);
             return this;
         }
         this.#queue.push(arguments);
         return this;
     }
     clear() {
-        this.#index = 0;
-        this.#queue.length = 0;
+        this.#queue.length = this.#index = 0;
+        this.#callback = this.#args = null;
         return this;
     }
     destroy() {
-        this.#parent = null;
-        this.#nextCb = null;
-        this.#queue.length = 0;
-        this.#queue = null;
+        this.clear().#initArgs = this.#nextCb = this.#queue = null;
     }
     get index() {
         return this.#index;

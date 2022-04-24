@@ -9,19 +9,19 @@ const CallbackQueue = require("ca11back-queue");
 <div>
     <h2>Class: <code>CallbackQueue</code></h2>
     <div>
-        The callbackQueue offers a synchronous execution of queued asynchronous functions (callbacks) and not blocking the eventloop. The callbackQueue can pass over arguments when pushing new callbacks into the queue. The callbackQueue can also pass over arguments when invoking the next queued callback. Additionally the callbackQueue can invoke queued callbacks and passing over a certain parent object as <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/this">this</a>.
+        The callbackQueue offers a synchronous execution of queued asynchronous functions (callbacks) and not blocking the eventloop. When pushing callbacks into the queue arguments can be passed over. Arguments can also be passed over when invoking the next function from within a queued callback. The <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/this">this</a> from wihin a callback are the callbackQueue itself so that also count for classes that are extended from the CallbackQueue. During the construction of a callbackQueue certain defaultArgs can be set.
     </div>
 </div>
 
 <div>
-    <h3><code>new CallbackQueue([parent])</code></h3>
+    <h3><code>new CallbackQueue([...initArgs])</code></h3>
     <ul>
         <details>
             <summary>
-                <code>parent</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">&lt;Object&gt;</a> optional
+                <code>initArgs</code> optional
             </summary>
             <div>
-                Every callback is invoked with <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function/call">call</a> and sets either the parent parameter as <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/this">this</a> or in case that was undefined sets the callbackQueue as <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/this">this</a>.
+                When initArgs are initialized they are set the become the first arguments of every callback located even before the next function argument.
             </div>
         </details>
     </ul>
@@ -34,8 +34,16 @@ const CallbackQueue = require("ca11back-queue");
             <summary>
                 <code>calback</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function">&lt;Function&gt;</a>
             </summary>
-            <b><code>function callback(next[, ...args]) {}</code></b>
+            <b><code>function callback([...initArgs, ]next[, ...args]) {}</code></b>
             <ul>
+                <details>
+                    <summary>
+                        <code>initArgs</code>
+                    </summary>
+                    <div>
+                        When initArgs were initialized they are the first arguments in every callback.
+                    </div>
+                </details>
                 <details>
                     <summary>
                         <code>next</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function">&lt;Function&gt;</a> <b>Required!</b>
@@ -50,7 +58,9 @@ const CallbackQueue = require("ca11back-queue");
                         <code>args</code> optional
                     </summary>
                     <div>
-                        The combination of the initial captured arguments that were passed over to the push method and the secundaire captured arguments that were passed over into next function from the previous callback in the queue.
+                        A combination captured arguments:<br>
+                        1. arguments captured when invoking the the push method<br>
+                        2. arguments captured when invoking the next function from the previous callback in the queue.
                     </div>
                 </details>
             </ul>
@@ -63,14 +73,14 @@ const CallbackQueue = require("ca11back-queue");
                 <code>args</code> optional
             </summary>
             <div>
-                These initial arguments are passed over over to the callback.
+                Arguments passed over when invoking the push methods are set to be the first arguments after the next function argument within the queued callback.
             </div>
         </details>
         <details>
             <summary>
                 Returns <code>this</code> <a href="#class-callbackqueue">&lt;CallbackQueue&gt;</a>
             </summary>
-            Allows chaining methods.
+            For chaining methods.
         </details>
     </ul>
     <div>
@@ -89,13 +99,13 @@ const CallbackQueue = require("ca11back-queue");
         </details>
     </ul>
     <div>
-        Empties the queue, removing any queued callbacks and their arguments.
+        Empties the queue, removing any queued callbacks and their arguments and sets the index to <code>0</code>.
     </div>
 </div>
 
 <div>
     <h3><code>callbackQueue.destroy()</code></h3>
-    Empties the queue, removing any queued callbacks and their arguments and sets the parent property to null. Make sure all references to the instance are removed so it can be garbage collected.
+    Empties the queue, removing any queued callbacks and their arguments and removes any references to functios and arguments. Make sure to remove all references to the instance so it can be garbage collected.
 </div>
 
 <div>
@@ -151,17 +161,13 @@ const CallbackQueue = require("ca11back-queue");
 <h2>Example</h2>
 
 ```javascript
-class MyModule {
+class MyModule extends CallbackQueue {
     #c = 0;
-    #queue;
-    constructor() {
-        this.#queue = new CallbackQueue(this);
-    }
     a() {
-        this.#queue.push(this.#afterTimeoutA, 1000);
+        this.push(this.#afterTimeoutA, 1000);
         return this;
     }
-    #afterTimeoutA(next, msec) {
+    #afterTimeoutA(initArg, next, msec) {
         setTimeout(() => {
             this.#privMethod();
             next(console.log("finished a"));
@@ -171,23 +177,24 @@ class MyModule {
         console.log("counted priv:", ++this.#c);
     }
     b() {
-        this.#queue.push(this.#aAfterTimeoutB, 500);
+        this.push(this.#aAfterTimeoutB, 500);
         return this;
     }
-    #aAfterTimeoutB(next, msec) {
+    #aAfterTimeoutB(initArg, next, msec) {
         setTimeout(() => next(console.log("finished b")), msec);
     }
-    destroy() {
-        this.#queue.destroy();
-    }
 }
-const inst1 = new MyModule();
+const inst1 = new MyModule({ "i am always the first argument": true });
 inst1.a().b().a().b().a().b()
-    .b().b().b().a().a().a();
+    .b().b().b().a().a().a()
+    .push(function (initArg) {
+        console.log(initArg);
+        this.destroy();
+    });
 ```
 
 ```javascript
-// FilestreamLogger uses a CallbackQueue behind the screen.
+// FilestreamLogger uses a CallbackQueue under the hood.
 const FilestreamLogger = require("filestream-logger");
 const logger = {};
 logger.log = new FilestreamLogger("log");
