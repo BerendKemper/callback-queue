@@ -9,7 +9,7 @@ const CallbackQueue = require("ca11back-queue");
 <div>
     <h2>Class: <code>CallbackQueue</code></h2>
     <div>
-        The callbackQueue offers a synchronous execution of queued asynchronous functions (callbacks) and not blocking the eventloop. When pushing callbacks into the queue arguments can be passed over. Arguments can also be passed over when invoking the next function from within a queued callback. The <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/this">this</a> from wihin a callback are the callbackQueue itself so that also count for classes that are extended from the CallbackQueue. During the construction of a callbackQueue certain defaultArgs can be set.
+        The callbackQueue offers a synchronous execution of queued asynchronous functions (callbacks) and not blocking the eventloop. When pushing callbacks into the queue arguments can be passed over. Arguments can also be passed over when invoking the next function from within a queued callback. During the construction of a callbackQueue certain defaultArgs can be set.
     </div>
 </div>
 
@@ -161,15 +161,19 @@ const CallbackQueue = require("ca11back-queue");
 <h2>Example</h2>
 
 ```javascript
-class MyModule extends CallbackQueue {
+class MyModule {
+    #queue = null;
     #c = 0;
+    constructor(...initArgs) {
+        this.#queue = new CallbackQueue(this, ...initArgs);
+    }
     a() {
-        this.push(this.#afterTimeoutA, 1000);
+        this.#queue.push(this.#afterTimeoutA, 1000);
         return this;
     }
-    #afterTimeoutA(initArg, next, msec) {
+    #afterTimeoutA(self, initArg, next, msec) {
         setTimeout(() => {
-            this.#privMethod();
+            self.#privMethod();
             next(console.log("finished a"));
         }, msec);
     }
@@ -177,20 +181,23 @@ class MyModule extends CallbackQueue {
         console.log("counted priv:", ++this.#c);
     }
     b() {
-        this.push(this.#aAfterTimeoutB, 500);
+        this.#queue.push(this.#aAfterTimeoutB, 500);
         return this;
     }
-    #aAfterTimeoutB(initArg, next, msec) {
+    #aAfterTimeoutB(self, initArg, next, msec) {
         setTimeout(() => next(console.log("finished b")), msec);
     }
+    destroy() {
+        this.#queue.push((self, initArg) => {
+            console.log(initArg);
+            this.#queue.destroy();
+        });
+    }
 }
-const inst1 = new MyModule({ "i am always the first argument": true });
+const inst1 = new MyModule({ "i am always the second argument": true });
 inst1.a().b().a().b().a().b()
     .b().b().b().a().a().a()
-    .push(function (initArg) {
-        console.log(initArg);
-        this.destroy();
-    });
+    .destroy();
 ```
 
 ```javascript
